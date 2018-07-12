@@ -1,0 +1,31 @@
+security:
+    encoders:
+        App\Security\Metin2User:
+            id: App\Security\Encoder\Metin2PasswordEncoder
+
+    providers:
+        metin2_provider:
+            id: App\Security\Metin2UserProvider
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            http_basic: false
+            stateless: false
+            form_login:
+                login_path: login
+                check_path: login
+                success_handler: App\Security\PostAuthenticationHandler
+                failure_handler: App\Security\PostAuthenticationHandler
+            provider: metin2_provider
+            logout:
+                path: /logout
+                target: /
+
+    access_control:
+         - { path: /api/accounts, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ['POST'] }
+         - { path: ^/api/accounts, roles: ROLE_SUPERADMIN}
+

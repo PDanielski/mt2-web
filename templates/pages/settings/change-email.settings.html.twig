@@ -1,0 +1,16 @@
+{% extends 'pages/settings/settings.html.twig' %}
+{% block settingsBody %}
+    <div class="title-2 centered">Change email</div>
+    <div id="settings-change-password-form"></div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        const options = {
+            successUrl: "{{ path('getChangeEmailSuccessAction')|escape('js') }}",
+            apiUrl: "{{ path('apiChangeEmailAction')|escape('js') }}"
+        };
+        const elem = document.getElementById("settings-change-password-form");
+        loadComponent('settingsChangeEmailForm', elem, options);
+    </script>
+{% endblock %}

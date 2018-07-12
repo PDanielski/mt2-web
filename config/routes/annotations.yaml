@@ -1,0 +1,14 @@
+api_controllers:
+    resource: ../../src/Controller/Api
+    type: annotation
+    prefix: /api
+
+view_controllers:
+    resource: ../../src/Controller/View
+    type: annotation
+
+itemshop_view_controllers:
+    resource: ../../src/Controller/ItemShop/View
+    type: annotation
+    prefix: /shop
+

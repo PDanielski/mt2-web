@@ -1,0 +1,26 @@
+<div id="header">
+    <div class="container-lg flex-container flex-space-between">
+        {% block leftHeader %}
+            <div class="f-1 py-3">
+                <div id="logo">
+                    <img src="{{ asset('build/images/logo.png') }}"/>
+                </div>
+            </div>
+        {% endblock %}
+        {% block rightHeader %}
+            <div id="join-metin2warlords" class="centered f-1">
+                <div class="title-1 black-contr-shad">Join Metin2Warlords!</div>
+                <div class="flex-container flex-space-evenly my-2">
+                    {% include 'components/download-button.html.twig' %}
+                    {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <a href="{{ path("registration") }}" class="abtn abtn-dark uppercase ls-2 flex-container">
+                            Register
+                            <img src="{{ asset('build/images/register-icon.png') }}"/>
+                        </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% endblock %}
+    </div>
+</div>

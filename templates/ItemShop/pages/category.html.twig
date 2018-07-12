@@ -1,0 +1,61 @@
+{% extends 'ItemShop/base.html.twig' %}
+{% block body %}
+    {% include 'sections/main-navigation.html.twig' %}
+    {% embed 'sections/main-header.html.twig' %}
+        {% block rightHeader %}
+        {% endblock %}
+    {% endembed %}
+    <div>
+        <div id="itemshop-navigation-container" class="container-lg flex-container px-3 pxy-3">
+            <ol class="itemshop-navigation no-style-list flex-container my-3" style="padding-left:0;">
+                <li>
+                    <a href="#" class="px-3">Home</a>
+                </li>
+                <li>
+                    <a href="#" class="px-3">Categorie</a>
+                </li>
+            </ol>
+        </div>
+        <div class="container-lg flex-container" style="min-height:500px;">
+            <div class="f-3 px-2 py-2">
+                <div class="title-2">Item molto belli</div>
+            </div>
+            {% for product in products %}
+                <div>
+                    <div>
+                        {{ product.getName() }}
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="f-1 px-2 py-2">
+                {% for node in categoryNodes %}
+                    <div class="box my-3">
+                        <div class="box-title">
+                            <strong>{{ node.getCategory().getName }}</strong>
+                        </div>
+                        {% if node.hasChildren() %}
+                            <div class="title-hr"></div>
+                            <ul class="no-style-list itemshop-category-navigation" style="padding-left:0;">
+                                {% for childNode in node.getChildren() %}
+                                    {% set childCategory = childNode.getCategory() %}
+                                    <li>
+                                        {% if categoryLink == childCategory.getLinkSegment() %}
+                                            <a href="{{ path('showCategoryProducts', { categoryLink : childCategory.getLinkSegment() }) }}">
+                                                {{ childCategory.getName() }} - selected
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ path('showCategoryProducts', { categoryLink : childCategory.getLinkSegment() }) }}">
+                                                {{ childCategory.getName() }}
+                                            </a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

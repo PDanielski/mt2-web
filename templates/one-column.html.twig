@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% include 'sections/main-navigation.html.twig' with {'withPrivate': false} %}
+    <div class="container-sl">
+        <div id="logo">
+            <img src="{{ asset('build/images/logo.png') }}"/>
+        </div>
+        <div class="centered">
+            {% block oneColumnBody %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

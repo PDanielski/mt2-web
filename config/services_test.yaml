@@ -1,0 +1,53 @@
+
+parameters:
+    test_account_table: 'test_%account_table%'
+
+services:
+    _defaults:
+        public: true
+
+    # If you need to access services in a test, create an alias
+    # and then fetch that alias from the container. As a convention,
+    # aliases are prefixed with test. For example:
+    #
+    test.app.database_connection: '@app.database_connection'
+    test.App\Account\AccountRepository:
+        class: 'App\Account\AccountRepository'
+        arguments:
+            - '@test.app.database_connection'
+            - '%test_account_table%'
+    App\Metin2Domain\Account\Repository\AccountRepositoryInterface: '@test.App\Account\AccountRepository'
+    test.event_dispatcher:
+        class: 'Symfony\Component\EventDispatcher\EventDispatcher'
+    test.App\Metin2Domain\Account\DuplicationSpecification:
+        class: 'App\Metin2Domain\Account\DuplicationSpecification'
+        arguments:
+            - '@test.App\Account\AccountRepository'
+    test.App\Account\AccountRegistration:
+        class: 'App\Account\AccountRegistration'
+        arguments:
+            - '@test.app.database_connection'
+            - '@test.event_dispatcher'
+            - '@test.App\Metin2Domain\Account\DuplicationSpecification'
+            - '%test_account_table%'
+    App\Metin2Domain\Account\AccountRegistrationInterface: '@test.App\Account\AccountRegistration'
+    test.App\Account\EmailChanger:
+        class: 'App\Account\EmailChanger'
+        arguments:
+            - '@test.app.database_connection'
+            - '@test.event_dispatcher'
+            - '%test_account_table%'
+    App\Metin2Domain\Account\EmailChangerInterface: '@test.App\Account\EmailChanger'
+    test.App\Account\PasswordChanger:
+        class: 'App\Account\PasswordChanger'
+        arguments:
+            - '@test.app.database_connection'
+            - '@test.event_dispatcher'
+            - '%test_account_table%'
+    App\Metin2Domain\Account\PasswordChangerInterface: '@test.App\Account\PasswordChanger'
+    test.App\Command\WarmupCommand:
+        class: 'App\Command\WarmupCommand'
+        arguments:
+            - '@logger'
+        tags:
+            - { name: monolog.logger, channel: warmups }

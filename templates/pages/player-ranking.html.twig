@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ rankingMeta.getTitle() }}{% endblock %}
+{% block body %}
+    {% include 'sections/main-navigation.html.twig' with {'withPrivate': true} %}
+    {% include 'sections/main-header.html.twig' %}
+    <div id="content-container" class="container-lg py-3 px-3">
+        <div id="player-ranking"></div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        const elem = document.getElementById("player-ranking");
+        const options = {
+            baseUrl: "{{ path('getPlayerRankingAction', {rankingId: rankingId})|escape('js') }}",
+            apiUrl: "{{ path('apiGetPlayersRankingAction', {rankingId: rankingId})|escape('js') }}",
+            pageSize: {{ pageSize|escape('js') }},
+            currentPage: {{ currentPage|escape('js') }},
+            maxPage: {{ maxPage|escape('js') }},
+            title: "{{ rankingMeta.getTitle() }}",
+            desc: "{{ rankingMeta.getDesc() }}"
+        };
+        loadComponent('playerRanking', elem, options);
+    </script>
+{% endblock %}

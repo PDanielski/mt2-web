@@ -1,0 +1,38 @@
+<div id="main-navbar">
+    <div class="container-lg flex-container flex-space-between">
+        <nav id="main-navigation">
+            <ul class="flex-container no-style-list my-3" style="padding-left:0;">
+                <li>
+                    <a class="link-white px-3" href="{{ path("homepage") }}">Home</a>
+                </li>
+                <li>
+                    <a class="link-white px-3" href="{{ path('getPlayerRankingAction', {rankingId: 'prestige'}) }}">
+                        Prestige Ranking
+                    </a>
+                </li>
+                <li>
+                    <a class="link-white px-3" href="{{ path('getPlayerRankingAction', {rankingId: 'mmr'}) }}">
+                        MMR Ranking
+                    </a>
+                </li>
+                <li><a class="link-white px-3" href="/shop">ItemShop</a></li>
+                <li><a class="link-white px-3" href="/board">Forum</a></li>
+            </ul>
+        </nav>
+        {% if withPrivate is defined and withPrivate %}
+        <nav id="private-area">
+            <ul class="flex-container no-style-list my-3">
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <li><a class="link-white px-3" href="{{ path('getChangePasswordAction') }}">Change password</a></li>
+                    <li><a class="link-white px-3" href="{{ path('getChangeEmailAction') }}">Change email</a></li>
+                    <li><a class="link-white px-3" href="{{ path('logout') }}">Logout</a></li>
+                {% else %}
+                    <li>
+                        <a class="link-red px-3" href="{{ path('login') }}">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+{% block title %}Homepage{% endblock %}
+{% block body %}
+    {% include 'sections/main-navigation.html.twig' with {'withPrivate': true} %}
+    {% include 'sections/main-header.html.twig' %}
+    <div id="content-container" class="container-lg flex-container flex-space-between py-3 px-3">
+        <div class="f-5 px-3 py-3">
+            <div class="title-2">News from the staff</div>
+            {% for oneNews in news %}
+                <article class="news py-3">
+                    <div class="title-3">
+                        <strong>{{ oneNews.getAuthorName() }} posted on {{ oneNews.getPubDate()|date("m/d/Y") }}</strong>
+                        &nbsp;
+                        <small>
+                            <a class="link-red" href="{{ oneNews.getMoreLink() }}">{{ oneNews.getTitle() }}</a>
+                        </small>
+                    </div>
+                    <div>
+                        {{ oneNews.getTrailer() }}.
+                    </div>
+                </article>
+                <hr/>
+            {% endfor %}
+        </div>
+        <div class="f-2 px-2">
+            <div class="box my-3">
+                <div>
+                    <div class="box-title">
+                        <strong>TOP PRESTIGED PLAYERS</strong>
+                    </div>
+                    <div class="title-hr"></div>
+                    <table class="player-list">
+                        <thead>
+                        <tr>
+                            <th><strong>#</strong></th>
+                            <th><strong>Player name</strong></th>
+                            <th><strong>Prestige</strong></th>
+                            <th><strong>LvL</strong></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for player in prestigePlayers %}
+                            <tr class="{{ player.getKingdomName() }}-row-bg">
+                                <td>{{ player.getPosition() + 1 }}</td>
+                                <td>{{ player.getName() }}</td>
+                                <td>{{ player.getPrestige() }}</td>
+                                <td>{{ player.getLevel() }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div style="text-align: right;">
+                    <a class="link-red" href="{{ path('getPlayerRankingAction', {rankingId: 'prestige'}) }}"><small>View complete ranking</small></a>
+                </div>
+            </div>
+            <div class="box my-3">
+                <div class="box-title">
+                    <strong>TOP MMR PLAYERS</strong>
+                </div>
+                <div class="title-hr"></div>
+                <table class="player-list">
+                    <thead>
+                    <tr>
+                        <th><strong>#</strong></th>
+                        <th><strong>Player name</strong></th>
+                        <th><strong>MMR</strong></th>
+                        <th><strong>LvL</strong></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for player in mmrPlayers %}
+                        <tr class="{{ player.getKingdomName() }}-row-bg">
+                            <td>{{ player.getPosition() + 1 }}</td>
+                            <td>{{ player.getName() }}</td>
+                            <td>{{ player.getMmr() }}</td>
+                            <td>{{ player.getLevel() }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div style="text-align: right;">
+                    <a class="link-red" href="{{ path('getPlayerRankingAction', {rankingId: 'mmr'}) }}"><small>View complete ranking</small></a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% include 'sections/main-navigation.html.twig' with {'withPrivate': true} %}
+    {% include 'sections/main-header.html.twig' %}
+    <div id="content-container" class="container-lg flex-container flex-space-between py-3 px-3">
+        <div class="f-5 px-3 py-3">
+            {% block settingsBody %}
+            {% endblock %}
+        </div>
+        <div class="f-2 px-2">
+            <div class="box my-3">
+                <div class="box-title">
+                    <strong>SETTINGS</strong>
+                </div>
+                <div class="title-hr"></div>
+                <ul class="no-style-list big-tiles-menu">
+                    <li>
+                        <a href="{{ path('getChangePasswordAction') }}" class="link-red">Change password</a>
+                    </li>
+                    <li>
+                        <a href="#" class="link-red">Change email</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

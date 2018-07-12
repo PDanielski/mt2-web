@@ -1,0 +1,281 @@
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'en'
+
+    db_url: '%env(METIN2_DATABASE_URL)%'
+    account_table: 'account.account'
+    player_table: 'player.player'
+    player_ranking_table: 'player.player_ranking_representation'
+    item_table: 'player.item'
+    item_proto_table: 'player.item_proto'
+
+    api_key: '%env(API_KEY)%'
+    metin2_socket_api_ip: '%env(METIN2_SOCKET_API_IP)%'
+    metin2_socket_api_port: '%env(int:METIN2_SOCKET_API_PORT)%'
+    metin2_socket_api_key: '%env(METIN2_SOCKET_API_KEY)%'
+
+
+
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false       # Allows optimizing the container by removing unused services; this also means
+                            # fetching services directly from the container via $container->get() won't work.
+                            # The best practice is to be explicit about your dependencies anyway.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    #App\:
+    #    resource: '../src/*'
+    #    exclude: '../src/{Entity,Migrations,Tests, Model}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    #
+    # Security stuff
+    #
+    App\Security\Metin2UserProvider: ~
+    App\Security\PostAuthenticationHandler: ~
+    App\Security\Encoder\Metin2PasswordEncoder: ~
+
+    #
+    # Database stuff
+    #
+    Doctrine\DBAL\Configuration: ~
+    Doctrine\DBAL\Connection:
+        factory: 'Doctrine\DBAL\DriverManager::getConnection'
+        arguments:
+            -
+                url: '%db_url%'
+            - '@Doctrine\DBAL\Configuration'
+    app.database_connection:
+        alias: 'Doctrine\DBAL\Connection'
+
+    #
+    # Commands
+    #
+    App\Command\WarmupCommand:
+        arguments:
+            - '@logger'
+        calls:
+            - method: registerWarmable
+              arguments:
+                  - 'prestige_player_ranking'
+                  - '@app.player.ranking.prestige'
+            - method: registerWarmable
+              arguments:
+                  - 'mmr_player_ranking'
+                  - '@app.player.ranking.mmr'
+            - method: registerWarmable
+              arguments:
+                  - 'news'
+                  - '@App\News\RedisNewsProvider'
+        tags:
+            - { name: console.command, command: app:warmup }
+            - { name: monolog.logger, channel: warmups }
+
+    #
+    # Account related stuff
+    #
+    App\Account\Blocker\AccountBlocker:
+        arguments:
+            - '@app.database_connection'
+            - '%account_table%'
+            - '@event_dispatcher'
+    App\Account\Blocker\AccountBlockerInterface: '@App\Account\Blocker\AccountBlocker'
+    App\Account\EventListener\RecordBlockListener:
+        arguments:
+            - '@app.database_connection'
+        tags:
+            - { name: kernel.event_listener, event: app.account.blocked, method: onAccountBlocked }
+    App\Account\EventListener\RecordUnblockListener:
+        arguments:
+            - '@app.database_connection'
+        tags:
+            - { name: kernel.event_listener, event: app.account.unblocked, method: onAccountUnblocked }
+    App\Account\Registration\DuplicationSpecification:
+        arguments:
+            - '@App\Account\Repository\AccountRepositoryInterface'
+    App\Account\Registration\AccountRegistration:
+        arguments:
+            - '@app.database_connection'
+            - '@App\Account\Registration\DuplicationSpecification'
+            - '%account_table%'
+    App\Account\Registration\AccountRegistrationInterface: '@App\Account\Registration\AccountRegistration'
+    App\Account\Repository\AccountRepository:
+        arguments:
+            - '@app.database_connection'
+            - '%account_table%'
+    App\Account\Repository\AccountRepositoryInterface: '@App\Account\Repository\AccountRepository'
+    App\Account\Recovery\RecoveryTokenEncoder:
+        arguments:
+            - '%env(APP_SECRET)%'
+    App\Account\Recovery\RecoveryTokenEncoderInterface: '@App\Account\Recovery\RecoveryTokenEncoder'
+    App\Account\Recovery\RecoveryTokenEmitter:
+        arguments:
+            - '@App\Account\Recovery\RecoveryTokenEncoderInterface'
+            - '@logger'
+    App\Account\AccountFactory:
+        arguments:
+            - '@app.database_connection'
+    App\Account\AccountFactoryInterface: '@App\Account\AccountFactory'
+
+    #
+    # Item related stuff
+    #
+    App\Item\Repository\ItemPrototypeRepository:
+        arguments:
+            - '@app.database_connection'
+            - '%item_proto_table%'
+    App\Item\Repository\ItemPrototypeRepositoryInterface: '@App\Item\Repository\ItemPrototypeRepository'
+    App\Item\Courier\MallCourier:
+        arguments:
+            - '@app.database_connection'
+            - '@event_dispatcher'
+            - '@App\Item\Repository\ItemPrototypeRepositoryInterface'
+            - '%item_proto_table%'
+            - '%item_table%'
+    App\Item\Courier\ItemCourierInterface: '@App\Item\Courier\MallCourier'
+
+    #
+    #Player stuff
+    #
+    App\Player\PlayerRepository:
+        arguments:
+            - '@app.database_connection'
+            - '%player_table%'
+    App\Player\PlayerRepositoryInterface: '@App\Player\PlayerRepository'
+    App\Player\Ranking\Warmer\PrestigeRankingWarmer:
+        arguments:
+            - '@app.database_connection'
+            - '%player_ranking_table%'
+    App\Player\Ranking\Warmer\MmrRankingWarmer:
+        arguments:
+            - '@app.database_connection'
+            - '%player_ranking_table%'
+    App\Player\Ranking\SqlPlacedPlayersProvider:
+        arguments:
+            - '@app.database_connection'
+            - '%player_ranking_table%'
+    app.player.ranking.prestige.meta:
+        class: 'App\Player\Ranking\PlayerRankingMeta'
+        arguments:
+            - 'Top prestiged players'
+            - 'A list of the top prestiged players'
+    app.player.ranking.prestige:
+        class: 'App\Player\Ranking\RedisRanking'
+        arguments:
+            - '@snc_redis.default'
+            - '@App\Player\Ranking\SqlPlacedPlayersProvider'
+            - '@App\Player\Ranking\Warmer\PrestigeRankingWarmer'
+            - 'prestige'
+            - '@app.player.ranking.prestige.meta'
+    app.player.ranking.mmr.meta:
+        class: 'App\Player\Ranking\PlayerRankingMeta'
+        arguments:
+            - 'Top Mmr players'
+            - 'A list of the top mmr players'
+    app.player.ranking.mmr:
+        class: 'App\Player\Ranking\RedisRanking'
+        arguments:
+            - '@snc_redis.default'
+            - '@App\Player\Ranking\SqlPlacedPlayersProvider'
+            - '@App\Player\Ranking\Warmer\MmrRankingWarmer'
+            - 'mmr'
+            - '@app.player.ranking.mmr.meta'
+    App\Player\Ranking\RankingProvider:
+        calls:
+            - method: registerRanking
+              arguments:
+                  - '@app.player.ranking.prestige'
+            - method: registerRanking
+              arguments:
+                  - '@app.player.ranking.mmr'
+    App\Player\Ranking\RankingProviderInterface: '@App\Player\Ranking\RankingProvider'
+
+    #
+    # News
+    #
+    App\News\Warmer\BoardRssNewsWarmer:
+        arguments:
+            - 'https://metin2warlords.net/board/article-feed/2'
+    App\News\RedisNewsProvider:
+        arguments:
+            - '@App\News\Warmer\BoardRssNewsWarmer'
+            - '@snc_redis.default'
+    App\News\NewsProviderInterface: '@App\News\RedisNewsProvider'
+
+    #
+    # Event listeners
+    #
+    App\EventListener\LogItemDeliveryListener:
+        arguments:
+            - '@logger'
+        tags:
+            - { name: kernel.event_listener, event: app.item.item_sent, method: onItemSent }
+            - { name: monolog.logger, channel: item }
+    App\EventListener\LogAccountCreationListener:
+        arguments:
+            - '@logger'
+        tags:
+            - { name: kernel.event_listener, event: app.account.created, method: onAccountCreated }
+            - { name: monolog.logger, channel: account }
+    App\EventListener\LogPasswordChangeListener:
+        arguments:
+            - '@logger'
+        tags:
+            - { name: kernel.event_listener, event: app.account.password_changed, method: onPasswordChange }
+            - { name: monolog.logger, channel: account }
+    App\EventListener\LogEmailChangeListener:
+        arguments:
+            - '@logger'
+        tags:
+            - { name: kernel.event_listener, event: app.account.email_changed, method: onEmailChange }
+            - { name: monolog.logger, channel: account }
+    App\EventListener\LogCurrencyBalanceChangeListener:
+        arguments:
+            - '@logger'
+        tags:
+            - { name: kernel.event_listener, event: app.wallet.currency_balance_changed, method: onCurrencyBalanceChange }
+            - { name: monolog.logger, channel: wallet }
+
+    App\Api\Metin2SocketClient:
+        arguments:
+            - '%metin2_socket_api_ip%'
+            - '%metin2_socket_api_port%'
+            - '%metin2_socket_api_key%'
+
+
+    #
+    # Itemshop
+    # stuff
+    #
+
+    App\ItemShop\Product\Attachment\Metin2Item\Metin2ItemAttachmentRepository: ~
+    App\ItemShop\Product\Attachment\TypedAttachmentFactory:
+        arguments:
+            - ['@App\ItemShop\Product\Attachment\Metin2Item\Metin2ItemAttachmentRepository']
+
+    App\ItemShop\Product\Repository\ProductRepository: ~
+    App\ItemShop\Discount\ProductDiscountProvider: ~
+    App\ItemShop\Discount\DiscountProviderInterface: '@App\ItemShop\Discount\ProductDiscountProvider'
+    App\ItemShop\Product\Repository\ProductRepository: ~
+    App\ItemShop\Product\Repository\DiscountedProductRepository:
+        arguments:
+            - '@App\ItemShop\Product\Repository\ProductRepository'
+            - '@App\ItemShop\Discount\DiscountProviderInterface'
+    App\ItemShop\Product\Repository\ProductRepositoryInterface: '@App\ItemShop\Product\Repository\DiscountedProductRepository'
+
+
+

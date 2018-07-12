@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome{% endblock %} - Metin2Warlords</title>
+        <meta name="description" content="{% block description %} Metin2Warlords, an international metin2 private server{% endblock %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" href="{{ asset('build/images/favicon.ico') }}">
+        {% block stylesheets %}
+            <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+            <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+        {% endblock %}
+        {% block blockingJs %}
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+        {% block javascripts %}
+            <script type="text/javascript" src="{{ asset('build/app.js') }}"></script>
+        {% endblock %}
+    </body>
+</html>

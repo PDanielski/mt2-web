@@ -1,0 +1,18 @@
+{% extends 'one-column.html.twig' %}
+{% block title %}Login{% endblock %}
+{% block oneColumnBody %}
+    <div id="login-form"></div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        const options = {
+            apiUrl: "{{ loginUrl |escape('js') }}",
+            lostPasswordUrl: "{{ path('lostPassword')|escape('js') }}",
+            successUrl: "{{ successUrl |escape('js') }}",
+            errorMessage: "Authentication failed"
+        };
+        const elem = document.getElementById("login-form");
+        loadComponent("loginForm", elem, options);
+    </script>
+{% endblock %}

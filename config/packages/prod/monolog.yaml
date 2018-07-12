@@ -1,0 +1,37 @@
+monolog:
+    handlers:
+        main:
+            type: fingers_crossed
+            action_level: error
+            handler: nested
+            excluded_404s:
+                # regex: exclude all 404 errors from the logs
+                - ^/
+        nested:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+        console:
+            type:   console
+            process_psr_3_messages: false
+            channels: ["!event", "!doctrine"]
+        account:
+            type: stream
+            path: "%kernel.logs_dir%/account.log"
+            level: debug
+            channels: [account]
+        item:
+            type: stream
+            path: "%kernel.logs_dir%/item.log"
+            level: debug
+            channels: [item]
+        wallet:
+            type: stream
+            path: "%kernel.logs_dir%/wallet.log"
+            level: debug
+            channels: [wallet]
+        warmups:
+            type: stream
+            path: "%kernel.logs_dir%/warmups.log"
+            level: debug
+            channels: [warmups]

@@ -1,0 +1,23 @@
+{
+    "devDependencies": {
+        "@symfony/webpack-encore": "^0.20.1",
+        "babel-plugin-transform-class-properties": "^6.24.1",
+        "webpack-notifier": "^1.6.0"
+    },
+    "license": "UNLICENSED",
+    "private": true,
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production"
+    },
+    "dependencies": {
+        "babel-preset-env": "^1.6.1",
+        "babel-preset-react": "^6.24.1",
+        "npm": "^6.0.1",
+        "react": "^16.3.2",
+        "react-dom": "^16.3.2",
+        "react-recaptcha": "^2.3.8"
+    }
+}

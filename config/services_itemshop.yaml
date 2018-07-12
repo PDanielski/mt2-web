@@ -1,0 +1,73 @@
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'en'
+    db_url: '%env(METIN2_DATABASE_URL)%'
+    metin2_socket_api_ip: '%env(METIN2_SOCKET_API_IP)%'
+    metin2_socket_api_port: '%env(int:METIN2_SOCKET_API_PORT)%'
+    metin2_socket_api_key: '%env(METIN2_SOCKET_API_KEY)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false       # Allows optimizing the container by removing unused services; this also means
+                            # fetching services directly from the container via $container->get() won't work.
+                            # The best practice is to be explicit about your dependencies anyway.
+
+    #
+    # Database stuff
+    #
+    Doctrine\DBAL\Configuration:
+    Doctrine\DBAL\Connection:
+        factory: 'Doctrine\DBAL\DriverManager::getConnection'
+        arguments:
+            -
+                url: '%db_url%'
+            - '@Doctrine\DBAL\Configuration'
+    app.itemshop.database_connection:
+        alias: 'Doctrine\DBAL\Connection'
+
+    #
+    # Category stuff
+    #
+    App\ItemShop\Category\Repository\CategoryRepository: ~
+    App\ItemShop\Category\Repository\CategoryRepositoryInterface: '@App\ItemShop\Category\Repository\CategoryRepository'
+    App\ItemShop\Category\Tree\CategoryTree: ~
+    App\ItemShop\Category\Tree\CategoryTreeInterface: '@App\ItemShop\Category\Tree\CategoryTree'
+
+    #
+    # Product stuff
+    #
+    App\ItemShop\Product\Attachment\Metin2Item\Metin2ItemAttachmentRepository: ~
+    App\ItemShop\Product\Attachment\TypedAttachmentFactory:
+        arguments:
+            - ['@App\ItemShop\Product\Attachment\Metin2Item\Metin2ItemAttachmentRepository']
+    App\ItemShop\Product\Attachment\TypedAttachmentFactoryInterface: '@App\ItemShop\Product\Attachment\TypedAttachmentFactory'
+    App\ItemShop\Product\Attachment\AttachmentProvider:
+        arguments:
+            - '@app.itemshop.database_connection'
+            - '@App\ItemShop\Product\Attachment\TypedAttachmentFactoryInterface'
+    App\ItemShop\Product\Attachment\AttachmentProviderInterface: '@App\ItemShop\Product\Attachment\AttachmentProvider'
+    App\ItemShop\Product\Repository\ProductRepository: ~
+    App\ItemShop\Product\Repository\DiscountedProductRepository:
+        arguments:
+            - '@App\ItemShop\Product\Repository\ProductRepository'
+            - '@App\ItemShop\Discount\DiscountProviderInterface'
+    App\ItemShop\Product\Repository\ProductRepositoryInterface: '@App\ItemShop\Product\Repository\DiscountedProductRepository'
+
+    #
+    # Discount stuff
+    #
+    App\ItemShop\Discount\ProductDiscountProvider: ~
+    App\ItemShop\Discount\DiscountProviderInterface: '@App\ItemShop\Discount\ProductDiscountProvider'
+
+    #
+    # Wallet stuff
+    #
+    App\ItemShop\Wallet\Currency\CurrencyRepository: ~
+    App\ItemShop\Wallet\Currency\CurrencyRepositoryInterface: '@App\ItemShop\Wallet\Currency\CurrencyRepository'
+    App\ItemShop\Wallet\Metin2Wallet\Metin2WalletProviderFactory: ~
+    App\ItemShop\Wallet\WalletProviderFactoryInterface: '@App\ItemShop\Wallet\Metin2Wallet\Metin2WalletProviderFactory'
+
