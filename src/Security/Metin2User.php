@@ -18,10 +18,13 @@ class Metin2User implements UserInterface, EquatableInterface {
 
     protected $roles = array('ROLE_USER');
 
-    public function __construct(int $accountId, string $login, string $password, $roles = array()) {
+    protected $premiumpoints;
+
+    public function __construct(int $accountId, string $login, string $password, $premiumpoints, $roles = array()) {
         $this->accountId = $accountId;
         $this->login = $login;
         $this->password = $password;
+        $this->premiumpoints = $premiumpoints;
         if(count($roles) > 0) $this->roles = $roles;
     }
 
@@ -34,6 +37,10 @@ class Metin2User implements UserInterface, EquatableInterface {
 
     public function getPassword() {
         return $this->password;
+    }
+
+    public function getPremiumpoints() {
+        return $this->premiumpoints;
     }
 
     public function getSalt() {

@@ -27,7 +27,7 @@ class AccountFactory implements AccountFactoryInterface {
         SocialId $socialId,
         int $gold = 0,
         int $warpoints = 0,
-        int $biscuits = 0,
+        int $premiumpoints = 0,
         string $status = AccountStatuses::CONFIRMED
     ): AccountInterface {
         return new Account(
@@ -39,7 +39,7 @@ class AccountFactory implements AccountFactoryInterface {
             $socialId,
             $gold,
             $warpoints,
-            $biscuits,
+            $premiumpoints,
             $status
         );
     }

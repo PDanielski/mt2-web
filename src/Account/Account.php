@@ -28,11 +28,11 @@ class Account extends Metin2Account {
         SocialId $socialId,
         int $gold = 0,
         int $warpoints = 0,
-        int $biscuits = 0,
+        int $premiumpoints = 0,
         string $status = AccountStatuses::CONFIRMED
     ) {
         $this->conn = $connection;
-        parent::__construct($id, $login, $email, $password, $socialId, $gold, $warpoints, $biscuits, $status);
+        parent::__construct($id, $login, $email, $password, $socialId, $gold, $warpoints, $premiumpoints, $status);
     }
 
     public function changePassword(Password $password): void {
@@ -43,11 +43,6 @@ class Account extends Metin2Account {
     public function changeEmail(Email $email): void {
         parent::changeEmail($email);
         $this->changeProperty('email', $email->getEmail());
-    }
-
-    public function changePremiumpoints(int $delta): void {
-        parent::changePremiumpoints($delta);
-        $this->changeProperty('premiumpoints', $this->premiumpoints);
     }
 
     public function setGold(int $amount) {

@@ -21,7 +21,7 @@ class Metin2UserProvider implements UserProviderInterface {
     public function loadUserById(int $id) {
         try {
             $account = $this->repo->getById($id);
-            $user = new Metin2User($id, $account->getLogin()->getLogin(), $account->getPassword()->getEncryptedPassword());
+            $user = new Metin2User($id, $account->getLogin()->getLogin(), $account->getPassword()->getEncryptedPassword(), $account->getPremiumpoints());
             return $user;
         } catch (AccountNotFoundException $ex) {
             throw new UsernameNotFoundException("Account with id {$id} was not found", 0, $ex);
@@ -31,7 +31,7 @@ class Metin2UserProvider implements UserProviderInterface {
     public function loadUserByUsername($username) {
         try {
             $account = $this->repo->getByLogin($username);
-            $user = new Metin2User($account->getId(), $account->getLogin()->getLogin(), $account->getPassword()->getEncryptedPassword());
+            $user = new Metin2User($account->getId(), $account->getLogin()->getLogin(), $account->getPassword()->getEncryptedPassword(), $account->getPremiumpoints());
             return $user;
         } catch (AccountNotFoundException $ex) {
             throw new UsernameNotFoundException("{$username} was not found", 0, $ex);
@@ -43,7 +43,7 @@ class Metin2UserProvider implements UserProviderInterface {
     }
 
     public function supportsClass($class) {
-        return $class instanceof Metin2User;
+        return $class == Metin2User::class;
     }
 
 }

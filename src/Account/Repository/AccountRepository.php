@@ -26,7 +26,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
     protected $accountFactory;
 
-    protected $selects = ['id', 'login', 'password', 'email', 'social_id', 'status', 'gold', 'warpoints', 'biscuits'];
+    protected $selects = ['id', 'login', 'password', 'email', 'social_id', 'status', 'gold', 'warpoints', 'premiumpoints'];
 
     public function __construct(Connection $connection, string $accountTableName, AccountFactoryInterface $accountFactory) {
         $this->conn = $connection;
@@ -87,7 +87,7 @@ class AccountRepository implements AccountRepositoryInterface {
             $status = $accountData['status'];
             $gold = $accountData['gold'];
             $warpoints = $accountData['warpoints'];
-            $biscuits = $accountData['biscuits'];
+            $premiumpoints = $accountData['premiumpoints'];
 
             $account = $this->accountFactory->create(
                 $id,
@@ -97,7 +97,7 @@ class AccountRepository implements AccountRepositoryInterface {
                 $socialId,
                 $gold,
                 $warpoints,
-                $biscuits,
+                $premiumpoints,
                 $status
             );
             return $account;
