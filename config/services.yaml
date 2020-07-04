@@ -7,6 +7,9 @@ parameters:
     account_table: 'account.account'
     player_table: 'player.player'
     player_ranking_table: 'player.player_ranking_representation'
+    premium_points_packages_table: 'account.premium_points_packages'
+    moneygrabbers_table: 'account.moneygrabbers'
+    paypal_transactions_table: 'account.paypal_transactions'
     item_table: 'player.item'
     item_proto_table: 'player.item_proto'
 
@@ -15,7 +18,7 @@ parameters:
     metin2_socket_api_port: '%env(int:METIN2_SOCKET_API_PORT)%'
     metin2_socket_api_key: '%env(METIN2_SOCKET_API_KEY)%'
 
-
+    paypal_link: 'https://www.paypal.com/cgi-bin/webscr'
 
 
 services:
@@ -203,6 +206,29 @@ services:
               arguments:
                   - '@app.player.ranking.mmr'
     App\Player\Ranking\RankingProviderInterface: '@App\Player\Ranking\RankingProvider'
+
+
+    #
+    #PremiumPoints stuff
+    #
+    App\PremiumPoints\PremiumPointsPackageRepository:
+        arguments:
+            - '@app.database_connection'
+            - '%premium_points_packages_table%'
+    App\PremiumPoints\PremiumPointsPackageRepositoryInterface: '@App\PremiumPoints\PremiumPointsPackageRepository'
+
+    App\PremiumPoints\MoneygrabberRepository:
+        arguments:
+            - '@app.database_connection'
+            - '%moneygrabbers_table%'
+    App\PremiumPoints\MoneygrabberRepositoryInterface: '@App\PremiumPoints\MoneygrabberRepository'
+
+    App\PremiumPoints\PaypalTransactionRepository:
+        arguments:
+            - '@app.database_connection'
+            - '%paypal_transactions_table%'
+    App\PremiumPoints\PaypalTransactionRepositoryInterface: '@App\PremiumPoints\PaypalTransactionRepository'
+
 
     #
     # News

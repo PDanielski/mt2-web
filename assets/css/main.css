@@ -488,6 +488,22 @@ body {
     background: red;
 }
 
+.premiumpoints-link {
+    padding: 13px;
+    background: #363636;
+    border: #575757 1px solid;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.premiumpoints-link-text {
+    font-size: 20px;
+}
+
+.premiumpoints-link-price {
+    font-size: 30px;
+    margin-right: 10px;
+}
 
 
 

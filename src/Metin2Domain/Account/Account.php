@@ -19,7 +19,7 @@ class Account implements AccountInterface {
 
     protected $warpoints;
 
-    protected $biscuits;
+    protected $premiumpoints;
 
     protected $status;
 
@@ -33,7 +33,7 @@ class Account implements AccountInterface {
         SocialId $socialId,
         int $gold = 0,
         int $warpoints = 0,
-        int $biscuits = 0,
+        int $premiumpoints = 0,
         string $status = AccountStatuses::CONFIRMED,
         \DateTimeImmutable $blockedUntil = null
     ) {
@@ -44,7 +44,7 @@ class Account implements AccountInterface {
         $this->socialId = $socialId;
         $this->gold = $gold;
         $this->warpoints = $warpoints;
-        $this->biscuits = $biscuits;
+        $this->premiumpoints = $premiumpoints;
         $this->status = $status;
         $this->blockedUntil = null;
     }
@@ -101,16 +101,16 @@ class Account implements AccountInterface {
         $this->setWarpoints($this->getWarpoints() + $delta);
     }
 
-    public function getBiscuits(): int {
-        return $this->biscuits;
+    public function getPremiumpoints(): int {
+        return $this->premiumpoints;
     }
 
-    public function setBiscuits(int $amount) {
-        $this->biscuits = $amount;
+    public function setPremiumpoints(int $amount) {
+        $this->premiumpoints = $amount;
     }
 
-    public function changeBiscuits(int $delta) {
-        $this->setBiscuits($this->getBiscuits() + $delta);
+    public function changePremiumpoints(int $delta) {
+        $this->setPremiumpoints($this->getPremiumpoints() + $delta);
     }
 
     public function getStatus(): string {

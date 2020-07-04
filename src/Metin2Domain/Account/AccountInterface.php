@@ -30,11 +30,11 @@ interface AccountInterface {
 
     public function changeWarpoints(int $delta);
 
-    public function getBiscuits(): int;
+    public function getPremiumpoints(): int;
 
-    public function setBiscuits(int $amount);
+    public function setPremiumpoints(int $amount);
 
-    public function changeBiscuits(int $delta);
+    public function changePremiumpoints(int $delta);
 
     public function getStatus(): string;
 

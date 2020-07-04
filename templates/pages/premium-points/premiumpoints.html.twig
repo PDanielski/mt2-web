@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+{% block title %}Premium points{% endblock %}
+{% block body %}
+    {% include 'sections/main-navigation.html.twig' with {'withPrivate': true} %}
+    {% include 'sections/main-header.html.twig' %}
+    <div id="content-container" class="container-lg py-3 px-3">
+    	 {% for package in packages %}
+        <div class="flex-container flex-space-between premiumpoints-link" >
+            <div class="premiumpoints-link-text">{{package.getName()}} - {{package.getPoints()}} premium points</div>
+            <div class="flex-container">
+                <span class="premiumpoints-link-price">{{(package.getCost()/100)|number_format(2, ',','.')}}  &euro; </span>
+                <a href="{{ path('premiumpoints-paypal-link', {packageId: package.getId()}) }}" class="abtn abtn-light uppercase ls-2 flex-container">BUY</a>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+{% endblock %}
