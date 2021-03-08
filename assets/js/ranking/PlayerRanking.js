@@ -67,6 +67,7 @@ export default class PlayerRanking extends Ranking {
                     <td>{player.level}</td>
                     <td>{player.prestige}</td>
                     <td>{player.mmr}</td>
+                    <td>{player.tower}</td>
                 </tr>
             );
         }
@@ -100,6 +101,7 @@ export default class PlayerRanking extends Ranking {
                                     <th>Level</th>
                                     <th>Prestige</th>
                                     <th>Mmr</th>
+                                    <th>Piano Torre</th>
                                 </tr>
                             </thead>
                             <tbody>

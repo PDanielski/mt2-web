@@ -10,6 +10,8 @@ class MmrRankingWarmer extends SqlWarmer {
         $result = $queryBuilder
             ->select('id')
             ->from($this->table)
+            ->where("name not like '%[%'")
+            ->andWhere("name not like '%]%'")
             ->orderBy('mmr', 'desc')
             ->addOrderBy('playtime', 'desc')
             ->execute()

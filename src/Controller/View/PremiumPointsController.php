@@ -149,7 +149,7 @@ class PremiumPointsController extends Controller {
                 'cmd' => '_donations',
                 'item_name' => $package->getPoints() . ' Premiumpoints',
                 'business' => $poorest->getEmail(),
-                'notify_url' => 'https://metin2warlords.net/premium-points/paypal-ipn',
+                'notify_url' => 'https://warlords2.net/premium-points/paypal-ipn',
                 'rm' => 2,
                 'amount' => $package->getCost()/100,
                 'custom' => $custom,

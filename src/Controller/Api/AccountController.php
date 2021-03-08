@@ -158,7 +158,7 @@ class AccountController {
         }
 
         $data = array(
-            'secret' => "...",
+            'secret' => '6LcPQK8ZAAAAAH1Pa69D3tWHNiIThpZCFIYujOYb',
             'response' => $accountData['g-recaptcha-response']
         );
 

@@ -3,7 +3,7 @@
 
 namespace App\Player\Ranking\Warmer;
 
-class PrestigeRankingWarmer extends SqlWarmer {
+class TowerRankingWarmer extends SqlWarmer {
 
     public function warmup(callable $processIds) {
         $queryBuilder = $this->conn->createQueryBuilder();
@@ -12,18 +12,16 @@ class PrestigeRankingWarmer extends SqlWarmer {
             ->from($this->table)
             ->where("name not like '%[%'")
             ->andWhere("name not like '%]%'")
-            ->orderBy('prestige', 'desc')
-            ->addOrderBy('level', 'desc')
-            ->addOrderBy('playtime', 'desc')
+            ->orderBy('torre_infinita', 'desc')
             ->execute()
             ->fetchAll();
 
         $ids = [];
-        $i = 0;
         foreach($result as $row) {
-            $ids[$i++] = $row['id'];
+            $ids[] = $row['id'];
         }
+
         $processIds($ids);
     }
-
+    
 }

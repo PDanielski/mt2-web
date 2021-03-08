@@ -119,7 +119,7 @@ export default class RegistrationForm extends ErrorCheckingForm {
                     <input id="socialId" minLength={validations.SOCIAL_ID_LENGTH} maxLength={validations.SOCIAL_ID_LENGTH} className="input-1" type="text" placeholder="Cancellation code" onChange={this.handleChange}/>
                     <FieldErrorMessage errorMessage={this.getErrorMessage('socialId')}/>
                 </div>
-                <div className="g-recaptcha" data-sitekey="6LdeX1gUAAAAAGcY8ODR03EC8LtJ04SeOzJfXJsC"></div>
+                <div className="g-recaptcha" data-sitekey="6LcPQK8ZAAAAAGhjNMZSEfsZjauI8IprXf7qN6fl"></div>
                 <FieldErrorMessage errorMessage={this.getErrorMessage('g-recaptcha-response')}/>
                 <div className="my-3 flex-container flex-space-between flex-align-center">
                     <Loader hidden={!this.isLoading()}/>

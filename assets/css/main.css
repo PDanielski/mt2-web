@@ -98,7 +98,7 @@ textarea {
    ========================================================================== */
 body {
     font-family: 'Open Sans', sans-serif;
-    background: linear-gradient( rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8) ), url(../img/header-bg.png) #212121 no-repeat;
+    background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(../img/header-bg.png) #0f0f0f no-repeat;
     background-position-x: center;
     height:100%;
     font-size: 1em;
@@ -165,7 +165,7 @@ body {
 }
 
 .container-lg {
-    max-width: 1012px;
+    max-width: 1100px;
     margin: 0 auto;
 }
 

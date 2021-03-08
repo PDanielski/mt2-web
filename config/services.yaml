@@ -74,6 +74,10 @@ services:
         calls:
             - method: registerWarmable
               arguments:
+                  - 'tower_player_ranking'
+                  - '@app.player.ranking.tower'
+            - method: registerWarmable
+              arguments:
                   - 'prestige_player_ranking'
                   - '@app.player.ranking.prestige'
             - method: registerWarmable
@@ -133,6 +137,7 @@ services:
         arguments:
             - '@app.database_connection'
     App\Account\AccountFactoryInterface: '@App\Account\AccountFactory'
+    App\Account\Recovery\RecoveryTokenEmitterInterface: '@App\Account\Recovery\RecoveryTokenEmitter'
 
     #
     # Item related stuff
@@ -167,6 +172,10 @@ services:
         arguments:
             - '@app.database_connection'
             - '%player_ranking_table%'
+    App\Player\Ranking\Warmer\TowerRankingWarmer:
+        arguments:
+            - '@app.database_connection'
+            - '%player_ranking_table%'
     App\Player\Ranking\SqlPlacedPlayersProvider:
         arguments:
             - '@app.database_connection'
@@ -197,6 +206,21 @@ services:
             - '@App\Player\Ranking\Warmer\MmrRankingWarmer'
             - 'mmr'
             - '@app.player.ranking.mmr.meta'
+            
+    app.player.ranking.tower.meta:
+        class: 'App\Player\Ranking\PlayerRankingMeta'
+        arguments:
+            - 'Top Tower players'
+            - 'A list of the top tower players'
+    app.player.ranking.tower:
+        class: 'App\Player\Ranking\RedisRanking'
+        arguments:
+            - '@snc_redis.default'
+            - '@App\Player\Ranking\SqlPlacedPlayersProvider'
+            - '@App\Player\Ranking\Warmer\TowerRankingWarmer'
+            - 'tower'
+            - '@app.player.ranking.tower.meta'
+
     App\Player\Ranking\RankingProvider:
         calls:
             - method: registerRanking
@@ -205,6 +229,9 @@ services:
             - method: registerRanking
               arguments:
                   - '@app.player.ranking.mmr'
+            - method: registerRanking
+              arguments:
+                  - '@app.player.ranking.tower'
     App\Player\Ranking\RankingProviderInterface: '@App\Player\Ranking\RankingProvider'
 
 
@@ -240,7 +267,8 @@ services:
         arguments:
             - '@App\News\Warmer\BoardRssNewsWarmer'
             - '@snc_redis.default'
-    App\News\NewsProviderInterface: '@App\News\RedisNewsProvider'
+    App\News\ManualNewsProvider: ~
+    App\News\NewsProviderInterface: '@App\News\ManualNewsProvider'
 
     #
     # Event listeners

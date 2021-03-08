@@ -40,6 +40,11 @@ class Account extends Metin2Account {
         $this->changeProperty('password', $password->getEncryptedPassword());
     }
 
+    public function changePremiumpoints(int $delta): void {
+        parent::changePremiumpoints($delta);
+        $this->changeProperty('premiumpoints', $this->getPremiumpoints());
+    }
+
     public function changeEmail(Email $email): void {
         parent::changeEmail($email);
         $this->changeProperty('email', $email->getEmail());

@@ -131,6 +131,7 @@ class PlayerRankingController {
             'kingdomName' => $player->getKingdomName(),
             'minutesPlayed' => $player->getMinutesPlayed(),
             'mmr' => $player->getMmr(),
+            'tower' => $player->getTowerLv(),
             'prestige' => $player->getPrestige()
         ];
         return $data;

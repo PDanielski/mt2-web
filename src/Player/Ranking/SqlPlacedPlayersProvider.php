@@ -114,6 +114,7 @@ class SqlPlacedPlayersProvider implements PlacedPlayersProviderInterface {
             $data['guild_name'] ?? 'no guild',
             $data['playtime'],
             $data['mmr'] ?? 0,
+            $data['torre_infinita'] ?? 0,
             $data['prestige'] ?? 0
         );
 

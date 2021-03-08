@@ -25,6 +25,8 @@ class PlacedPlayer {
 
     protected $mmr;
 
+    protected $tower_lv;
+
     protected $prestige;
 
     public function __construct(
@@ -37,6 +39,7 @@ class PlacedPlayer {
         string $guildName,
         int $minutesPlayed,
         int $mmr,
+        int $tower_lv,
         int $prestige = 1
     ) {
         $this->id = $id;
@@ -48,6 +51,7 @@ class PlacedPlayer {
         $this->guildName = $guildName;
         $this->minutesPlayed = $minutesPlayed;
         $this->mmr = $mmr;
+        $this->tower_lv = $tower_lv;
         $this->prestige = $prestige;
         $this->position = 0;
     }
@@ -74,6 +78,10 @@ class PlacedPlayer {
 
     public function getLevel(): int {
         return $this->level;
+    }
+
+    public function getTowerLv(): int {
+        return $this->tower_lv;
     }
 
     public function getRaceName(): string {

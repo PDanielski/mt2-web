@@ -28,7 +28,7 @@ class RecoveryTokenEmitter implements RecoveryTokenEmitterInterface {
         LoggerInterface $logger,
         \Swift_Mailer $mailer,
         AccountRepositoryInterface $repository,
-        \Twig_Environment $twig,
+        \Twig\Environment $twig,
         UrlGeneratorInterface $urlGenerator
     ) {
         $this->encoder = $encoder;
@@ -42,10 +42,10 @@ class RecoveryTokenEmitter implements RecoveryTokenEmitterInterface {
     public function emit(RecoveryToken $token) {
         try {
             $acc = $this->repository->getById($token->getAccountId());
-            $message = new \Swift_Message("Password recovery request - Metin2Warlords");
+            $message = new \Swift_Message("Password recovery request - Warlords 2");
             $encodedToken = $this->encoder->encode($token);
             $message
-                ->setFrom('webmaster@metin2warlords.net')
+                ->setFrom('webmaster@warlords2.net')
                 ->setTo($acc->getEmail()->getEmail())
                 ->setBody($this->twig->render('mails/recovery.html.twig', [
                     'link' => $this->urlGenerator->generate('lostPasswordChange', [], UrlGeneratorInterface::ABSOLUTE_URL).'?token='.$encodedToken,

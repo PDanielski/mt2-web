@@ -40,9 +40,8 @@ class RedisRanking implements PlayerRankingInterface, Warmable {
         $end = $limit > 0 ? $start + $limit - 1 : $start;
 
         $ids = $this->client->zrange($this->getRedisKey(), $start, $end);
-
         $placedPlayers = $this->provider->getByPlayerIds($ids);
-
+		
         $positionToPlacedPlayerMap = [];
         $position = $offset;
         foreach($ids as $id) {
@@ -53,6 +52,7 @@ class RedisRanking implements PlayerRankingInterface, Warmable {
                 $position++;
             }
         }
+
 
         return $positionToPlacedPlayerMap;
     }
@@ -93,6 +93,7 @@ class RedisRanking implements PlayerRankingInterface, Warmable {
         $client = $this->client;
         $this->warmer->warmup(function(array $ids) use ($redisKey, $client) {
             $idToScore = array_flip($ids);
+            $client->del($redisKey);
             foreach($idToScore as $id => $score) {
                 $client->zadd($redisKey, [$id => $score]);
             }

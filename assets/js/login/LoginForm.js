@@ -33,7 +33,7 @@ export default class LoginForm extends ErrorCheckingForm {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             credentials: 'include',
-            body: '_username='+this.getFieldValue('login')+'&_password='+this.getFieldValue('password')
+            body: '_username='+encodeURIComponent(this.getFieldValue('login'))+'&_password='+encodeURIComponent(this.getFieldValue('password'))
         }).then((response) => {
             if(response.status === 401 ) {
                 this.stopLoading();

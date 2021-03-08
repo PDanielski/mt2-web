@@ -87,7 +87,7 @@ class MoneygrabberRepository implements MoneygrabberRepositoryInterface {
         $queryBuilder = $this->conn->createQueryBuilder();
         $queryBuilder
         ->update($this->tableName)
-        ->set('earnings', ':earnings')
+        ->set('earnings', 'earnings + :earnings')
         ->setParameter('earnings', $earnings)
         ->where('email = :email')
         ->setParameter('email', $email)
